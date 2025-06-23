@@ -1,7 +1,7 @@
 # requirements.txt
 
 matplotlib==3.8.0       # Plotting and data visualization
-numpy==1.26.1           # Numerical computations
+numpy>=1.26,<1.27
 openai==0.28.1          # OpenAI API integration
 pandas==2.1.1           # Data manipulation and analysis
 python-dotenv==1.0.0    # Load environment variables from .env
