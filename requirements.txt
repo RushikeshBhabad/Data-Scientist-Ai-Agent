@@ -1,0 +1,20 @@
+# requirements.txt
+
+matplotlib==3.8.0       # Plotting and data visualization
+numpy==1.26.1           # Numerical computations
+openai==0.28.1          # OpenAI API integration
+pandas==2.1.1           # Data manipulation and analysis
+python-dotenv==1.0.0    # Load environment variables from .env
+seaborn==0.13.0         # Statistical data visualization
+streamlit==1.27.2       # Web app framework for data apps
+langchain==0.0.331      # LangChain framework for LLM-based apps
+scikit-learn
+
+plotly
+sweetviz
+requests
+aiohttp
+beautifulsoup4
+urllib3
+
+#keep kaggle.json in .kaggle
