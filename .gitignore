@@ -1,0 +1,23 @@
+# Python cache and compiled files
+__pycache__/
+*.py[cod]
+*.pyo
+
+# Virtual environment
+venv/
+.env
+
+# Kaggle API token folder
+.kaggle/
+
+# Ignore all .txt, .log, .pkl, .html files
+*.txt
+*.log
+*.pkl
+*.html
+
+# VS Code settings
+.vscode/
+
+# Sensitive files
+apikey.py
