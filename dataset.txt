@@ -13,7 +13,7 @@ import numpy as np
 import uuid
 from datetime import datetime
 from langchain_groq import ChatGroq
-from langchain_core.messages import HumanMessage
+from langchain.schema import HumanMessage
 from langchain_experimental.agents import create_pandas_dataframe_agent
 from dotenv import load_dotenv, find_dotenv
 import requests
@@ -28,14 +28,13 @@ from apikey import GITHUB_TOKEN
 import urllib3
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
-load_dotenv()
-groq_api_key = os.getenv("GROQ_API_KEY")
+load_dotenv(find_dotenv())
 
 # Initialize LLM
 llm = ChatGroq(
     temperature=0.2,
     groq_api_key=groq_api_key,
-    model_name="llama-3.3-70b-versatile"
+    model_name="llama3-70b-8192"
 )
 
 class DatasetFinder:
@@ -309,7 +308,14 @@ class DatasetFinder:
                 all_results.extend(datasets)
             return all_results[:15]
 
-def run():
+def main():
+    st.set_page_config(
+        page_title="🔍 Advanced Dataset Finder",
+        page_icon="🔍",
+        layout="wide",
+        initial_sidebar_state="expanded"
+    )
+    
     st.title("🔍 Advanced Dataset Finder")
     st.markdown("### Find datasets from across the internet with AI-powered search")
     
@@ -462,11 +468,11 @@ def run():
     This advanced dataset finder searches across multiple sources:
     - **Kaggle**: Machine learning and data science datasets
     - **GitHub**: Open source datasets and repositories
-    - **Data.gov**: government open data
+    - **Data.gov**: US government open data
     - **UCI ML Repository**: Classic machine learning datasets
     
     🤖 **AI-Enhanced**: Uses advanced language models to understand your queries and rank results by relevance.
     """)
 
 if __name__ == "__main__":
-    run()
+    main()

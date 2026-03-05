@@ -1,20 +1,42 @@
 # requirements.txt
 
-matplotlib==3.8.0       # Plotting and data visualization
-numpy>=1.26,<1.27
-openai==0.28.1          # OpenAI API integration
-pandas==2.1.1           # Data manipulation and analysis
-python-dotenv==1.0.0    # Load environment variables from .env
-seaborn==0.13.0         # Statistical data visualization
-streamlit==1.27.2       # Web app framework for data apps
-langchain==0.0.331      # LangChain framework for LLM-based apps
+# Core Data Science
+matplotlib>=3.8.0
+numpy>=1.26.1
+pandas>=2.1.1
+seaborn>=0.13.0
 scikit-learn
+scipy>=1.10.0
 
+# Visualization
 plotly
 sweetviz
+
+# Web Framework
+streamlit>=1.28.0
+
+# LangChain & LLM
+langchain>=0.2.0
+langchain-core>=0.2.0
+langchain-groq
+langchain-experimental
+langchain-community>=0.2.0
+
+# LLM Providers (optional — install if using HuggingFace models)
+# langchain-huggingface>=0.0.3
+# huggingface-hub>=0.20.0
+
+# AutoML
+pycaret
+
+# API & Web
 requests
 aiohttp
 beautifulsoup4
 urllib3
+openai>=0.28.1
 
-#keep kaggle.json in .kaggle
+# Utilities
+python-dotenv>=1.0.0
+kaggle
+joblib

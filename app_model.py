@@ -4,7 +4,6 @@ from apikey import groq_api_key
 import streamlit as st
 import pandas as pd
 import plotly.express as px
-import sweetviz as sv
 import io
 import base64
 import re
@@ -14,31 +13,37 @@ import numpy as np
 
 
 from langchain_groq import ChatGroq
-from langchain.schema import HumanMessage
+from langchain_core.messages import HumanMessage
 from langchain_experimental.agents import create_pandas_dataframe_agent
 from dotenv import load_dotenv, find_dotenv
 
-from pycaret.classification import (
-    setup as cls_setup,
-    compare_models as cls_compare,
-    pull as cls_pull,
-    plot_model as cls_plot_model,
-    save_model as cls_save_model,
-    create_model as cls_create_model,
-    tune_model as cls_tune_model,
-    evaluate_model as cls_evaluate_model,
-)
+# Conditional PyCaret imports (requires Python 3.9-3.11)
+PYCARET_AVAILABLE = False
+try:
+    from pycaret.classification import (
+        setup as cls_setup,
+        compare_models as cls_compare,
+        pull as cls_pull,
+        plot_model as cls_plot_model,
+        save_model as cls_save_model,
+        create_model as cls_create_model,
+        tune_model as cls_tune_model,
+        evaluate_model as cls_evaluate_model,
+    )
 
-from pycaret.regression import (
-    setup as reg_setup,
-    compare_models as reg_compare,
-    pull as reg_pull,
-    plot_model as reg_plot_model,
-    save_model as reg_save_model,
-    create_model as reg_create_model,
-    tune_model as reg_tune_model,
-    evaluate_model as reg_evaluate_model
-)
+    from pycaret.regression import (
+        setup as reg_setup,
+        compare_models as reg_compare,
+        pull as reg_pull,
+        plot_model as reg_plot_model,
+        save_model as reg_save_model,
+        create_model as reg_create_model,
+        tune_model as reg_tune_model,
+        evaluate_model as reg_evaluate_model
+    )
+    PYCARET_AVAILABLE = True
+except (ImportError, RuntimeError):
+    pass
 
 from sklearn.utils.multiclass import type_of_target
 from sklearn.model_selection import train_test_split
@@ -63,13 +68,14 @@ def safe_execute(code: str) -> str:
 
 def run():
     # Load env
-    load_dotenv(find_dotenv())
+    load_dotenv()
+    groq_api_key = os.getenv("GROQ_API_KEY")
 
     # Initialize LLM
     llm = ChatGroq(
         temperature=0.2,
         groq_api_key=groq_api_key,
-        model_name="deepseek-r1-distill-llama-70b"
+        model_name="llama-3.3-70b-versatile"
     )
 
     # Initialize session state
@@ -84,7 +90,7 @@ def run():
 
 
     # ================================== MODEL SELECTION & TRAINING =============================================
-    st.title("🤖 ML Model Training & AutoML Pipeline")
+    st.title("🤖 ML Model Training & Evaluation")
 
     st.header("🚀 Model Selection & Training")
 
@@ -192,6 +198,9 @@ def run():
                 st.error(f"❌ Error loading file: {e}")
     # ================================== AUTO ML =====================================================================
     st.header("🧪 AutoML Pipeline")
+
+    if not PYCARET_AVAILABLE:
+        st.warning(f"⚠️ PyCaret is not available (requires Python 3.9-3.11, you have Python {sys.version_info.major}.{sys.version_info.minor}). AutoML features are disabled. Use the LLM-based Model Training above instead.")
 
     # AutoML Button
     if st.button("🧪 Start AutoML", key="automl_btn"):
@@ -354,8 +363,6 @@ def run():
     # ================================= Hyperparameter tuning ============================================
     # --- Hyperparameter Tuning Section ---
 
-    
-
     # Session state for UI control
     if "show_tuning_ui" not in st.session_state:
         st.session_state.show_tuning_ui = False
@@ -367,7 +374,7 @@ def run():
 
     if st.session_state.show_tuning_ui:
         tune_option = st.radio("Choose tuning strategy:",
-                            ["🔮 PyCaret Auto Tune",
+                            ["🔮 Auto Tune",
                                 "🧪 GridSearchCV Fallback",
                                 "🧾 Generate Tuning Code"])
 
@@ -382,7 +389,7 @@ def run():
             task_type = "classification" if type_of_target(df_tune[target_col]) in ["binary", "multiclass"] else "regression"
 
             # --- PyCaret Auto Tune ---
-            if tune_option == "🔮 PyCaret Auto Tune":
+            if tune_option == "🔮 Auto Tune":
                 from pycaret.classification import setup as cls_setup, create_model as cls_create_model, tune_model as cls_tune_model, evaluate_model as cls_evaluate_model
                 from pycaret.regression import setup as reg_setup, create_model as reg_create_model, tune_model as reg_tune_model, plot_model as reg_plot_model
 
@@ -399,7 +406,7 @@ def run():
                                     tuned_model = model
                                 else:
                                     raise e
-                            st.success("✅ Tuning Complete (PyCaret)")
+                            st.success("✅ Tuning Complete")
                             cls_evaluate_model(tuned_model)
                             st.code(str(tuned_model), language="python")
                         else:
@@ -418,7 +425,7 @@ def run():
                             st.code(str(tuned_model), language="python")
 
                     except Exception as e:
-                        st.error(f"❌ PyCaret tuning failed: {e}")
+                        st.error(f"❌ tuning failed: {e}")
 
             # --- GridSearchCV Fallback ---
             elif tune_option == "🧪 GridSearchCV Fallback":
@@ -503,7 +510,7 @@ def run():
                 llm = ChatGroq(
                     temperature=0.2,
                     groq_api_key=groq_api_key,
-                    model_name="deepseek-r1-distill-llama-70b"
+                    model_name="llama-3.3-70b-versatile"
                 )
 
                 model_type = "RandomForestClassifier" if task_type == "classification" else "RandomForestRegressor"

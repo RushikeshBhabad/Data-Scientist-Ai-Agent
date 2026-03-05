@@ -5,19 +5,28 @@ __pycache__/
 
 # Virtual environment
 venv/
+.venv/
 .env
 
 # Kaggle API token folder
 .kaggle/
 
-# Ignore all .txt, .log, .pkl, .html files
-*.txt
+# Generated files
 *.log
 *.pkl
-*.html
+sweetviz_report.html
 
 # VS Code settings
 .vscode/
 
 # Sensitive files
 apikey.py
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Large/binary files
+*.docx
+best_model.pkl
+*.bak

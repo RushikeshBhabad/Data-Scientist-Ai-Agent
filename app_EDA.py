@@ -10,7 +10,7 @@ import io
 import base64
 
 from langchain_groq import ChatGroq
-from langchain.schema import HumanMessage
+from langchain_core.messages import HumanMessage
 from langchain_experimental.agents import create_pandas_dataframe_agent
 from dotenv import load_dotenv,find_dotenv
 
@@ -19,7 +19,7 @@ from dotenv import load_dotenv,find_dotenv
 def get_llm():
     return ChatGroq(
         temperature=0,
-        model_name="llama3-70b-8192",
+        model_name="llama-3.3-70b-versatile",
         groq_api_key=groq_api_key
     )
 
@@ -164,28 +164,23 @@ def function_question_dataframe(_agent, question):
 
 def run():
     #GROQApiKey
-    os.environ['GROQ_API_KEY'] = groq_api_key
-    load_dotenv(find_dotenv())
+    load_dotenv()
+    groq_api_key = os.getenv("GROQ_API_KEY")
 
     #Title
-    st.title('AI Agent for Data Science 🤖')
+    st.title('Agent for EDA')
 
     #Welcoming message
-    st.write("Hello, 👋 I am your AI Assistant and I am here to help you with your data science projects.")
+    st.write("Hello, 👋 I am your AI Assistant and I am here to help you with Data cleaning, Preprocessing and EDA.")
 
     #Explanation sidebar
     with st.sidebar:
-        st.write('*Your Data Science Adventure Begins with an CSV File.*')
-        st.caption('''**You may already know that every exciting data science journey starts with a dataset.
-        That's why I'd love for you to upload a CSV file.
-        Once we have your data in hand, we'll dive into understanding it and have some fun exploring it.
-        Then, we'll work together to shape your business challenge into a data science framework.
-        I'll introduce you to the coolest machine learning models, and we'll use them to tackle your problem. Sounds fun right?**
-        ''')
+        st.write('Click on the tasks which you want to perform.')
+
 
         st.divider()
 
-        st.caption("<p style ='text-align:center'> made by Rushikesh </p>",unsafe_allow_html=True )
+        st.caption("<p style ='text-align:center'> </p>",unsafe_allow_html=True )
 
     # -==========================================  Session state init ==================================================================
     if 'clicked' not in st.session_state:
@@ -267,7 +262,7 @@ def run():
         #LLM 
         llm = ChatGroq(
                 temperature=0,
-                model_name="llama3-70b-8192",  # Or another available model like "mixtral-8x7b-32768"
+                model_name="llama-3.3-70b-versatile",
                 groq_api_key=groq_api_key
         )
 
@@ -368,7 +363,7 @@ def run():
 
 
     # ======================================= Feature Engineering ===========================================================
-    llm = ChatGroq(model="llama3-70b-8192", api_key=groq_api_key)
+    llm = ChatGroq(model="llama-3.3-70b-versatile", api_key=groq_api_key)
 
     # === Session state to toggle FE assistant ===
     if "feature_engineering_clicked" not in st.session_state:
